@@ -14,10 +14,15 @@ from deap import tools
 from math import *
 from random import randint
 
+# Maximum d'EV qu'un pokémon peut avoir [variable globale]
+MAX_EV = 63
+
 # Nombre de genes (groupe de6 pokémons)
 # Creation de la suite Ã  chercher
 NB_PARAMETRES = 6
 
+# est ce que la valeur n'est pas plutôt 0 car on cherche une équipe de pokémons 
+# ayant théoriquement tous 10/10 et 6 fois d'où mon écart = 60
 VALEUR_VISEE = 10
 
 
@@ -26,9 +31,9 @@ VALEUR_VISEE = 10
 INT_MIN = 0
 INT_MAX = 1061
 # Nombre de generations
-NGEN = 35
+NGEN = 1
 # Taille HallOfFame
-THOF = 10
+THOF = 6
 
 # Taille population
 MU = 1061
@@ -94,7 +99,13 @@ i=-1
 for l in liste:
     i += 1
     ndex, species, hp, attack, defense, spattack, spdefense, speed = l.split(",")
-    puissance= ((((int(hp)/maxHp)*1)+((int(attack)/maxAttack)*1)+((int(defense)/maxDefense)*1)+((int(spattack)/maxSpattack)*1)+((int(spdefense)/maxSpdefense)*1)+((int(speed)/maxSpeed)*1))*1.6666)
+    puissance= ((((int(hp)/(maxHp+MAX_EV))*1)
+                +((int(attack)/(maxAttack+MAX_EV))*1)
+                +((int(defense)/(maxDefense+MAX_EV))*1)
+                +((int(spattack)/(maxSpattack+MAX_EV))*1)
+                +((int(spdefense)/(maxSpdefense+MAX_EV))*1)
+                +((int(speed)/(maxSpeed+MAX_EV))*1))*1.6666)
+    
     liste[i]=liste[i]+","+str(puissance)
     if puissance > maxPuissance:
         maxPuissance = puissance
@@ -109,33 +120,19 @@ for l in liste:
 
 # fonction pour l'affichage d'un individu
 def readResult(individual):
-    #chaine = convertInd(individual)
+    chaine = convertInd(individual)
     
     texte = liste[individual[1]]
     
-    resultat = evaluate(liste)
+    resultat1, resultat2 = evaluate(liste)
+    print (resultat2)
     
-    return texte, resultat                                          
+    
+    return texte, resultat1, resultat2                                          
 
 # fonction de fitness
 def evaluate(individual):
-    #liste = convertInd(individual)   
-
-    #test[0] = IVHP
-    #test[1] = EVHP
-    #test[2] = IVATTACK
-    #test[3] = EVATTACK
-    #test[4] = IVDEFENSE
-    #test[5] = EVDEFENSE
-    #test[6] = IVSPATTACK
-    #test[7] = EVSPATTACK
-    #test[8] = IVSPDEFENSE
-    #test[9] = EVSPEDEFENSE
-    #test[10] = IVSPEED
-    #test[11] = EVSPEED
-    
-    #print(individual[0])
-    
+    #liste = convertInd(individual)  
     #ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = l.split(",")
     
     ecart = 60
@@ -153,12 +150,6 @@ def evaluate(individual):
         for pokemon in liste:
             ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = pokemon.split(",")
             rangPokemon = int(ndex);
-
-            #if rangPokemon == 843:
-                #print ("Mewtwo : " + puissance)
-                
-            #if rangPokemon == 939:
-                #print ("Pokemon cheaté arceus : " + puissance)
             
             #print(ndex); 
             #print(indiv);
@@ -167,7 +158,7 @@ def evaluate(individual):
                 #print(indiv)                
                 ecart = ecart - float(puissance)
     print(ecart);
-    return ecart, 
+    return (ecart, individual) 
 
 # Suite des outils
 toolbox.register("mate", tools.cxOnePoint)
@@ -238,8 +229,11 @@ if __name__ == "__main__":
     ax3.set_xlabel("Generation")
     ax3.set_ylabel("Variance", color="blue")    
 """
+    
     for i in range(THOF):
-        texte, result = readResult(hof[i])
-        print(texte + ' = ' + str(result))
-
+        texte, resultat1, resultat2 = readResult(hof[i])
+        print('text = ' + str(texte))
+        print('group = '+ str(resultat1))
+        print('ecart = '+ str(resultat2))
+        
     plt.show()    
