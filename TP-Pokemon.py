@@ -6,6 +6,7 @@ import random
 import numpy
 import math
 import csv
+import matplotlib as plt
 
 from deap import algorithms
 from deap import base
@@ -120,7 +121,7 @@ for l in liste:
 
 # fonction pour l'affichage d'un individu
 def readResult(individual):
-    chaine = convertInd(individual)
+   # chaine = convertInd(individual)
     
     texte = liste[individual[1]]
     
@@ -233,7 +234,7 @@ if __name__ == "__main__":
     for i in range(THOF):
         texte, resultat1, resultat2 = readResult(hof[i])
         print('text = ' + str(texte))
-        print('group = '+ str(resultat1))
-        print('ecart = '+ str(resultat2))
+        print('group = '+ str(resultat2))
+        print('ecart = '+ str(resultat1))
         
     plt.show()    
