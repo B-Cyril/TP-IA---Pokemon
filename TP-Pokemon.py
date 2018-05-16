@@ -14,26 +14,27 @@ from deap import tools
 from math import *
 from random import randint
 
-# Maximum d'EV qu'un pokémon peut avoir [variable globale]
+# Variables globales
+# Maximum d'EV qu'un pokémon peut avoir
 MAX_EV = 63
 
-# Nombre de genes (groupe de6 pokémons)
-# Creation de la suite Ã  chercher
-NB_PARAMETRES = 6
+# Nombre de genes (groupe de 6 pokémons)
+# Creation de la suite à chercher
+NB_PARAMETRES = 42
 
-# est ce que la valeur n'est pas plutôt 0 car on cherche une équipe de pokémons 
-# ayant théoriquement tous 10/10 et 6 fois d'où mon écart = 60
-VALEUR_VISEE = 10
+# on cherche 0 en considérant que tous les pokémons
+# auront théoriquement tous 10/10 et 6 fois d'où mon écart = 60
+VALEUR_VISEE = 0
 
 
-# Min et max pour le tirage aleatoire des genes
-# METTRE UNE CONDITION POUR NE PAS POUVOIR CHOISIR 2 FOIS LE MEME
+# Min et max pour le tirage aleatoire des gênes
 INT_MIN = 0
 INT_MAX = 1061
+
 # Nombre de generations
-NGEN = 1
+NGEN = 75
 # Taille HallOfFame
-THOF = 6
+THOF = 1
 
 # Taille population
 MU = 1061
@@ -43,7 +44,7 @@ LAMBDA = MU
 # Probabite de crossover pour 2 individus
 CXPB = 0.7
 # Probabilite de mutation d'un individu
-MUTPB = 0.2
+MUTPB = 0.3
 
 # Algorithme utilise : eaSimple (simple GA), eaMuCommaLambda (evolutionary algorithm mu + lambda), eaGenerateUpdate (ask-tell model), eaMuCommaLambda (evolutionary algorithm mu, lambda),
 METHODE = 1
@@ -110,42 +111,64 @@ for l in liste:
     if puissance > maxPuissance:
         maxPuissance = puissance
 
-
-# fonction de conversion d'un individu
-#def convertInd(individual):
-    
-    #ECRIRE ICI SI BESOIN DE RAJOUTER DES COEFFICIENTS
-   
-    #return liste
-
-# fonction pour l'affichage d'un individu
-def readResult(individual):
-    chaine = convertInd(individual)
-    
-    texte = liste[individual[1]]
-    
-    resultat1, resultat2 = evaluate(liste)
-    print (resultat2)
-    
-    
-    return texte, resultat1, resultat2                                          
-
 # fonction de fitness
 def evaluate(individual):
     #liste = convertInd(individual)  
     #ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = l.split(",")
     
     ecart = 60
+    groupe = []
+    puissanceEV = []
     print(individual)
     
+    for i in range(0,1162):
+        puissanceEV.append(0)
+  
+    #permet d'éviter l'ajout de trop d'EV
+    for i in range(6,42):
+        if individual[i] > 63:
+            ecart= ecart + 1000
     
-    #permet d'éviter les doublons : list(set() vire les doublons et on compare la taille du tableau tronqué avec l'autre
-    cleanedList = list(set(individual))
-    if len(individual) != len(cleanedList):
-        ecart=2000
-                
+    if (individual[6]+individual[7]+individual[8]+individual[9]+individual[10]+individual[11] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[0]] = (individual[6]/maxAttack) + (individual[7]/maxSpattack) + (individual[8]/maxDefense) + (individual[9]/maxSpdefense) + (individual[10]/maxHp) + (individual[11]/maxSpeed)
 
+    if (individual[12]+individual[13]+individual[14]+individual[15]+individual[16]+individual[17] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[1]] = (individual[12]/maxAttack) + (individual[13]/maxSpattack) + (individual[14]/maxDefense) + (individual[15]/maxSpdefense) + (individual[16]/maxHp) + (individual[17]/maxSpeed)
+
+    if (individual[18]+individual[19]+individual[20]+individual[21]+individual[22]+individual[23] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[2]] = (individual[18]/maxAttack) + (individual[19]/maxSpattack) + (individual[20]/maxDefense) + (individual[21]/maxSpdefense) + (individual[22]/maxHp) + (individual[23]/maxSpeed)
+
+    if (individual[24]+individual[25]+individual[26]+individual[27]+individual[28]+individual[29] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[3]] = (individual[24]/maxAttack) + (individual[25]/maxSpattack) + (individual[26]/maxDefense) + (individual[27]/maxSpdefense) + (individual[28]/maxHp) + (individual[29]/maxSpeed)
+
+    if (individual[30]+individual[31]+individual[32]+individual[33]+individual[34]+individual[35] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[4]] = (individual[30]/maxAttack) + (individual[31]/maxSpattack) + (individual[32]/maxDefense) + (individual[33]/maxSpdefense) + (individual[34]/maxHp) + (individual[35]/maxSpeed)
+
+    if (individual[36]+individual[37]+individual[38]+individual[39]+individual[40]+individual[41] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[5]] = (individual[36]/maxAttack) + (individual[37]/maxSpattack) + (individual[38]/maxDefense) + (individual[39]/maxSpdefense) + (individual[40]/maxHp) + (individual[41]/maxSpeed)
+   
+    #permet d'éviter les doublons : list(set() vire les doublons et on compare la taille du tableau tronqué avec l'autre
+    for i in range(0,6):
+        groupe.append(individual[i])
+       
+    cleanedList = list(set(groupe))
+    if len(groupe) != len(cleanedList):
+        ecart = ecart + 2000
     
+    #initialisation d'un compteur pour enlever la puissance des 6 premiers individus
+    compteur = 0   
     for indiv in individual:
         for pokemon in liste:
             ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = pokemon.split(",")
@@ -153,12 +176,13 @@ def evaluate(individual):
             
             #print(ndex); 
             #print(indiv);
-            if rangPokemon == indiv:
+            if rangPokemon == indiv and compteur < 6:
                 #print("Pokémon trouvé : " + str(rangPokemon));
-                #print(indiv)                
-                ecart = ecart - float(puissance)
+                ecart = ecart - float(puissance)- puissanceEV[rangPokemon]
+                compteur = compteur + 1
+            
     print(ecart);
-    return (ecart, individual) 
+    return (ecart, individual)
 
 # Suite des outils
 toolbox.register("mate", tools.cxOnePoint)
@@ -170,18 +194,18 @@ def main():
     pop = toolbox.population(n=MU)
     hof = tools.HallOfFame(maxsize=THOF)
     
-    groupe_stats = tools.Statistics(key=lambda ind: ind.fitness.values[0])
-    stats = tools.MultiStatistics(groupe=groupe_stats)    
-    stats.register("avg", numpy.mean, axis=0)
-    stats.register("std", numpy.std, axis=0)
-    stats.register("min", numpy.min, axis=0)
-    stats.register("max", numpy.max, axis=0)
-    stats.register("var", numpy.var, axis=0)
+    #groupe_stats = tools.Statistics(key=lambda ind: ind.fitness.values[0])
+    #stats = tools.MultiStatistics(groupe=groupe_stats)    
+    #stats.register("avg", numpy.mean, axis=0)
+    #stats.register("std", numpy.std, axis=0)
+    #stats.register("min", numpy.min, axis=0)
+    #stats.register("max", numpy.max, axis=0)
+    #stats.register("var", numpy.var, axis=0)
     
-    logbook = tools.Logbook()
+    #logbook = tools.Logbook()
     
     if METHODE == 1:
-        pop, logbook = algorithms.eaSimple(pop, toolbox, CXPB, MUTPB, NGEN, stats, halloffame=hof)
+        pop, logbook = algorithms.eaSimple(pop, toolbox, CXPB, MUTPB, NGEN, halloffame=hof)
     
     elif METHODE == 2:
         pop, logbook = algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats, halloffame=hof)
@@ -190,14 +214,12 @@ def main():
         pop, logbook = algorithms.eaGenerateUpdate(toolbox, NGEN, stats, hof) 
         
     elif METHODE == 4:
-        pop, logbook = algorithms.eaMuCommaLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats, halloffame=hof)    
-        
-    record = stats.compile(pop)
+        pop, logbook = algorithms.eaMuCommaLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, halloffame=hof)    
 
-    return pop, stats, hof, logbook
+    return pop, hof, logbook
                  
 if __name__ == "__main__":
-    pop, stats, hof, logbook = main()
+    pop, hof, logbook = main()
     """   
     import matplotlib.pyplot as plt
     
@@ -229,11 +251,19 @@ if __name__ == "__main__":
     ax3.set_xlabel("Generation")
     ax3.set_ylabel("Variance", color="blue")    
 """
-    
-    for i in range(THOF):
-        texte, resultat1, resultat2 = readResult(hof[i])
-        print('text = ' + str(texte))
-        print('group = '+ str(resultat1))
-        print('ecart = '+ str(resultat2))
-        
-    plt.show()    
+    nomPokemon = []
+    compteur = 1
+    print("Le groupe des 6 meilleurs pokémons est composé de : ")
+    for indiv in hof[0]:
+        for pokemon in liste:
+            ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = pokemon.split(",")
+            rangPokemon = int(ndex);
+            
+            if rangPokemon == indiv:
+                nomPokemon.append(species)
+                if compteur < 7 :
+                    print("Pokémon " +compteur + ": id = " +ndex + " nom = " +species)
+                    print("avec les EV suivants : point de vie = " + indiv[compteur*6] + " attaque = " + indiv[(compteur*6)+1] + " défense = " + indiv[(compteur*6)+2] + " attaque spéciale = " + indiv[(compteur*6)+3] + " défense spéciale = " + indiv[(compteur*6)+4] + " vitesse = " + indiv[(compteur*6)+5])
+                compteur = compteur + 1
+     
+    #plt.show()    
