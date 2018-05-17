@@ -29,15 +29,15 @@ VALEUR_VISEE = 0
 
 # Min et max pour le tirage aleatoire des gênes
 INT_MIN = 0
-INT_MAX = 1061
+INT_MAX = 0
 
 # Nombre de generations
-NGEN = 75
+NGEN = 1
 # Taille HallOfFame
 THOF = 1
 
 # Taille population
-MU = 1061
+MU = 500
 
 # Nombre d'enfant produit a chaque generation
 LAMBDA = MU
@@ -120,7 +120,6 @@ def evaluate(individual):
     groupe = []
     puissanceEV = []
     print(individual)
-    
     for i in range(0,1162):
         puissanceEV.append(0)
   
@@ -252,9 +251,19 @@ if __name__ == "__main__":
     ax3.set_ylabel("Variance", color="blue")    
 """
     nomPokemon = []
+    meilleurPokemon = []
+    EVpokemon1 = []
+    EVpokemon2 = []
+    EVpokemon3 = []
+    EVpokemon4 = []
+    EVpokemon5 = []
+    EVpokemon6 = []
+    
     compteur = 1
-    print("Le groupe des 6 meilleurs pokémons est composé de : ")
+    compteur2 = 1
+    
     for indiv in hof[0]:
+        
         for pokemon in liste:
             ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = pokemon.split(",")
             rangPokemon = int(ndex);
@@ -262,8 +271,41 @@ if __name__ == "__main__":
             if rangPokemon == indiv:
                 nomPokemon.append(species)
                 if compteur < 7 :
-                    print("Pokémon " +compteur + ": id = " +ndex + " nom = " +species)
-                    print("avec les EV suivants : point de vie = " + indiv[compteur*6] + " attaque = " + indiv[(compteur*6)+1] + " défense = " + indiv[(compteur*6)+2] + " attaque spéciale = " + indiv[(compteur*6)+3] + " défense spéciale = " + indiv[(compteur*6)+4] + " vitesse = " + indiv[(compteur*6)+5])
-                compteur = compteur + 1
-     
+                    meilleurPokemon.append("Pokémon " +str(compteur) + ": id = " +str(ndex) + " nom = " +str(species))                   
+                    compteur = compteur + 1
+        
+        if compteur2 > 6 and compteur2 < 13:
+            EVpokemon1.append(indiv)
+        if compteur2 > 12 and compteur2 < 19:
+            EVpokemon2.append(indiv)
+        if compteur2 > 18 and compteur2 < 25:
+            EVpokemon3.append(indiv)
+        if compteur2 > 24 and compteur2 < 31:
+            EVpokemon4.append(indiv)  
+        if compteur2 > 30 and compteur2 < 37:
+            EVpokemon5.append(indiv)
+        if compteur2 > 36:
+            EVpokemon6.append(indiv)    
+        
+        compteur2 = compteur2 + 1
+    
+    print("Le groupe des 6 meilleurs pokémons est composé de : ")
+    print(meilleurPokemon[0])
+    print("avec les EV suivants : point de vie = " + str(EVpokemon1[0])
+        + " attaque = " + str(EVpokemon1[1]) 
+        + " défense = " + str(EVpokemon1[2]) 
+        + " attaque spéciale = " + str(EVpokemon1[3]) 
+        + " défense spéciale = " + str(EVpokemon1[4]) 
+        + " vitesse = " + str(EVpokemon1[5])) 
+    print(str(EVpokemon1) + " somme des EV = " +str((EVpokemon1[0]+EVpokemon1[1]+EVpokemon1[2]+EVpokemon1[3]+EVpokemon1[4]+EVpokemon1[5])))
+    print(meilleurPokemon[1])
+    print(str(EVpokemon2) + " somme des EV = " +str((EVpokemon2[0]+EVpokemon2[1]+EVpokemon2[2]+EVpokemon2[3]+EVpokemon2[4]+EVpokemon2[5])))
+    print(meilleurPokemon[2])
+    print(str(EVpokemon3) + " somme des EV = " +str((EVpokemon3[0]+EVpokemon3[1]+EVpokemon3[2]+EVpokemon3[3]+EVpokemon3[4]+EVpokemon3[5])))
+    print(meilleurPokemon[3])
+    print(str(EVpokemon4) + " somme des EV = " +str((EVpokemon4[0]+EVpokemon4[1]+EVpokemon4[2]+EVpokemon4[3]+EVpokemon4[4]+EVpokemon4[5])))
+    print(meilleurPokemon[4])
+    print(str(EVpokemon5) + " somme des EV = " +str((EVpokemon5[0]+EVpokemon5[1]+EVpokemon5[2]+EVpokemon5[3]+EVpokemon5[4]+EVpokemon5[5])))
+    print(meilleurPokemon[5])
+    print(str(EVpokemon6) + " somme des EV = " +str((EVpokemon6[0]+EVpokemon6[1]+EVpokemon6[2]+EVpokemon6[3]+EVpokemon6[4]+EVpokemon6[5])))
     #plt.show()    
