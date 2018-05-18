@@ -6,6 +6,7 @@ import random
 import numpy
 import math
 import csv
+import time
 
 from deap import algorithms
 from deap import base
@@ -13,6 +14,9 @@ from deap import creator
 from deap import tools
 from math import *
 from random import randint
+
+# Heure de démarrage du programme
+t = time.time()
 
 # Variables globales
 # Maximum d'EV qu'un pokémon peut avoir
@@ -29,15 +33,15 @@ VALEUR_VISEE = 0
 
 # Min et max pour le tirage aleatoire des gênes
 INT_MIN = 0
-INT_MAX = 0
+INT_MAX = 1061
 
 # Nombre de generations
-NGEN = 1
+NGEN = 10
 # Taille HallOfFame
 THOF = 1
 
 # Taille population
-MU = 500
+MU = 100
 
 # Nombre d'enfant produit a chaque generation
 LAMBDA = MU
@@ -62,7 +66,7 @@ liste = []
 with open('pokemon.csv', newline='', encoding='UTF8') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
-        liste.append(row[0][1:]+","+row[2]+","+row[9]+","+row[10]+","+row[11]+","+row[12]+","+row[13]+","+row[14])
+        liste.append(row[0][1:]+","+row[3]+","+row[9]+","+row[10]+","+row[11]+","+row[12]+","+row[13]+","+row[14])
         # enregistre les donnees qui pourront nous servir sur les pokemons (attaque, defense) le [1:] permet de tronquer le " present avant chaque chaine
 maxHp=0
 maxAttack=0
@@ -119,44 +123,47 @@ def evaluate(individual):
     ecart = 60
     groupe = []
     puissanceEV = []
+    individu = []
     print(individual)
-    for i in range(0,1162):
+    for i in range(0,1062):
         puissanceEV.append(0)
   
     #permet d'éviter l'ajout de trop d'EV
     for i in range(6,42):
-        if individual[i] > 63:
-            ecart= ecart + 1000
+        individu.append(int(individual[i]/(16.59375)))
+
+        #if individual[i] > 63:
+        #    ecart= ecart + 1000
+
+    if (individu[0]+individu[1]+individu[2]+individu[3]+individu[4]+individu[5] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[0]] = (individu[0]/maxAttack) + (individu[1]/maxSpattack) + (individu[2]/maxDefense) + (individu[3]/maxSpdefense) + (individu[4]/maxHp) + (individu[5]/maxSpeed)
     
-    if (individual[6]+individual[7]+individual[8]+individual[9]+individual[10]+individual[11] > 127):
+    if (individu[6]+individu[7]+individu[8]+individu[9]+individu[10]+individu[11] > 127):
         ecart = ecart + 500
     else:
-        puissanceEV[individual[0]] = (individual[6]/maxAttack) + (individual[7]/maxSpattack) + (individual[8]/maxDefense) + (individual[9]/maxSpdefense) + (individual[10]/maxHp) + (individual[11]/maxSpeed)
+        puissanceEV[individual[1]] = (individu[6]/maxAttack) + (individu[7]/maxSpattack) + (individu[8]/maxDefense) + (individu[9]/maxSpdefense) + (individu[10]/maxHp) + (individu[11]/maxSpeed)        
+    
+    if (individu[12]+individu[13]+individu[14]+individu[15]+individu[16]+individu[17] > 127):
+        ecart = ecart + 500
+    else:
+        puissanceEV[individual[2]] = (individu[12]/maxAttack) + (individu[13]/maxSpattack) + (individu[14]/maxDefense) + (individu[15]/maxSpdefense) + (individu[16]/maxHp) + (individu[17]/maxSpeed)
 
-    if (individual[12]+individual[13]+individual[14]+individual[15]+individual[16]+individual[17] > 127):
+    if (individu[18]+individu[19]+individu[20]+individu[21]+individu[22]+individu[23] > 127):
         ecart = ecart + 500
     else:
-        puissanceEV[individual[1]] = (individual[12]/maxAttack) + (individual[13]/maxSpattack) + (individual[14]/maxDefense) + (individual[15]/maxSpdefense) + (individual[16]/maxHp) + (individual[17]/maxSpeed)
+        puissanceEV[individual[3]] = (individu[18]/maxAttack) + (individu[19]/maxSpattack) + (individu[20]/maxDefense) + (individu[21]/maxSpdefense) + (individu[22]/maxHp) + (individu[23]/maxSpeed)
 
-    if (individual[18]+individual[19]+individual[20]+individual[21]+individual[22]+individual[23] > 127):
+    if (individu[24]+individu[25]+individu[26]+individu[27]+individu[28]+individu[29] > 127):
         ecart = ecart + 500
     else:
-        puissanceEV[individual[2]] = (individual[18]/maxAttack) + (individual[19]/maxSpattack) + (individual[20]/maxDefense) + (individual[21]/maxSpdefense) + (individual[22]/maxHp) + (individual[23]/maxSpeed)
+        puissanceEV[individual[4]] = (individu[24]/maxAttack) + (individu[25]/maxSpattack) + (individu[26]/maxDefense) + (individu[27]/maxSpdefense) + (individu[28]/maxHp) + (individu[29]/maxSpeed)
 
-    if (individual[24]+individual[25]+individual[26]+individual[27]+individual[28]+individual[29] > 127):
+    if (individu[30]+individu[31]+individu[32]+individu[33]+individu[34]+individu[35] > 127):
         ecart = ecart + 500
     else:
-        puissanceEV[individual[3]] = (individual[24]/maxAttack) + (individual[25]/maxSpattack) + (individual[26]/maxDefense) + (individual[27]/maxSpdefense) + (individual[28]/maxHp) + (individual[29]/maxSpeed)
-
-    if (individual[30]+individual[31]+individual[32]+individual[33]+individual[34]+individual[35] > 127):
-        ecart = ecart + 500
-    else:
-        puissanceEV[individual[4]] = (individual[30]/maxAttack) + (individual[31]/maxSpattack) + (individual[32]/maxDefense) + (individual[33]/maxSpdefense) + (individual[34]/maxHp) + (individual[35]/maxSpeed)
-
-    if (individual[36]+individual[37]+individual[38]+individual[39]+individual[40]+individual[41] > 127):
-        ecart = ecart + 500
-    else:
-        puissanceEV[individual[5]] = (individual[36]/maxAttack) + (individual[37]/maxSpattack) + (individual[38]/maxDefense) + (individual[39]/maxSpdefense) + (individual[40]/maxHp) + (individual[41]/maxSpeed)
+        puissanceEV[individual[5]] = (individu[30]/maxAttack) + (individu[31]/maxSpattack) + (individu[32]/maxDefense) + (individu[33]/maxSpdefense) + (individu[34]/maxHp) + (individu[35]/maxSpeed)
    
     #permet d'éviter les doublons : list(set() vire les doublons et on compare la taille du tableau tronqué avec l'autre
     for i in range(0,6):
@@ -179,8 +186,10 @@ def evaluate(individual):
                 #print("Pokémon trouvé : " + str(rangPokemon));
                 ecart = ecart - float(puissance)- puissanceEV[rangPokemon]
                 compteur = compteur + 1
-            
-    print(ecart);
+    
+    print(individu)        
+    print(ecart)
+        
     return (ecart, individual)
 
 # Suite des outils
@@ -275,17 +284,17 @@ if __name__ == "__main__":
                     compteur = compteur + 1
         
         if compteur2 > 6 and compteur2 < 13:
-            EVpokemon1.append(indiv)
+            EVpokemon1.append(int(indiv/(16.59375)))        
         if compteur2 > 12 and compteur2 < 19:
-            EVpokemon2.append(indiv)
+            EVpokemon2.append(int(indiv/(16.59375)))
         if compteur2 > 18 and compteur2 < 25:
-            EVpokemon3.append(indiv)
+            EVpokemon3.append(int(indiv/(16.59375)))
         if compteur2 > 24 and compteur2 < 31:
-            EVpokemon4.append(indiv)  
+            EVpokemon4.append(int(indiv/(16.59375)))  
         if compteur2 > 30 and compteur2 < 37:
-            EVpokemon5.append(indiv)
+            EVpokemon5.append(int(indiv/(16.59375)))
         if compteur2 > 36:
-            EVpokemon6.append(indiv)    
+            EVpokemon6.append(int(indiv/(16.59375)))    
         
         compteur2 = compteur2 + 1
     
@@ -308,4 +317,15 @@ if __name__ == "__main__":
     print(str(EVpokemon5) + " somme des EV = " +str((EVpokemon5[0]+EVpokemon5[1]+EVpokemon5[2]+EVpokemon5[3]+EVpokemon5[4]+EVpokemon5[5])))
     print(meilleurPokemon[5])
     print(str(EVpokemon6) + " somme des EV = " +str((EVpokemon6[0]+EVpokemon6[1]+EVpokemon6[2]+EVpokemon6[3]+EVpokemon6[4]+EVpokemon6[5])))
-    #plt.show()    
+    
+    tempsFinal = (time.time()-t)
+    duree = " seconde(s)"
+    if ((time.time()-t) > 60 and (time.time()-t) < 3600):
+        tempsFinal = tempsFinal/60
+        duree = " minute(s)"
+    elif ((time.time()-t) > 3600):
+        tempsFinal = tempsFinal/3600
+        duree = " heure(s)"
+    
+    print("Temps de calul " + str(tempsFinal) + duree)
+        
