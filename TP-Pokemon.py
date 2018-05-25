@@ -21,22 +21,30 @@ t = time.time()
 # Variables globales
 # Maximum d'EV qu'un pokémon peut avoir
 MAX_EV = 63
+maxHp=0
+maxAttack=0
+maxSpattack=0
+maxDefense=0
+maxSpdefense=0
+maxSpeed=0
 
 # Nombre de genes (groupe de 6 pokémons)
 # Creation de la suite à chercher
 NB_PARAMETRES = 42
 
 # on cherche 0 en considérant que tous les pokémons
-# auront théoriquement tous 10/10 et 6 fois d'où mon écart = 60
+# auront théoriquement tous 10/10 et 6 fois d'où l'écart = 60
+# dans la fonction d'évaluation
 VALEUR_VISEE = 0
 
 
-# Min et max pour le tirage aleatoire des gênes
+# Min et max pour le tirage aleatoire des gênes (nombre de pokémon différents)
 INT_MIN = 0
 INT_MAX = 1061
 
 # Nombre de generations
-NGEN = 10
+NGEN = 5
+
 # Taille HallOfFame
 THOF = 1
 
@@ -68,12 +76,6 @@ with open('pokemon.csv', newline='', encoding='UTF8') as csvfile:
     for row in spamreader:
         liste.append(row[0][1:]+","+row[3]+","+row[9]+","+row[10]+","+row[11]+","+row[12]+","+row[13]+","+row[14])
         # enregistre les donnees qui pourront nous servir sur les pokemons (attaque, defense) le [1:] permet de tronquer le " present avant chaque chaine
-maxHp=0
-maxAttack=0
-maxSpattack=0
-maxDefense=0
-maxSpdefense=0
-maxSpeed=0
 
 # permet d'initialiser les maximums de spécialités parmis tous les pokémons pour obtenir un ratio par la suite
 for i in liste:
@@ -117,23 +119,20 @@ for l in liste:
 
 # fonction de fitness
 def evaluate(individual):
-    #liste = convertInd(individual)  
-    #ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = l.split(",")
     
     ecart = 60
     groupe = []
     puissanceEV = []
     individu = []
+    
     print(individual)
+
     for i in range(0,1062):
         puissanceEV.append(0)
   
     #permet d'éviter l'ajout de trop d'EV
     for i in range(6,42):
         individu.append(int(individual[i]/(16.59375)))
-
-        #if individual[i] > 63:
-        #    ecart= ecart + 1000
 
     if (individu[0]+individu[1]+individu[2]+individu[3]+individu[4]+individu[5] > 127):
         ecart = ecart + 500
@@ -180,14 +179,11 @@ def evaluate(individual):
             ndex, species, hp, attack, defense, spattack, spdefense, speed, puissance = pokemon.split(",")
             rangPokemon = int(ndex);
             
-            #print(ndex); 
-            #print(indiv);
             if rangPokemon == indiv and compteur < 6:
-                #print("Pokémon trouvé : " + str(rangPokemon));
                 ecart = ecart - float(puissance)- puissanceEV[rangPokemon]
                 compteur = compteur + 1
     
-    print(individu)        
+    #print(individu)        
     print(ecart)
         
     return (ecart, individual)
@@ -201,16 +197,6 @@ toolbox.register("evaluate", evaluate)
 def main():    
     pop = toolbox.population(n=MU)
     hof = tools.HallOfFame(maxsize=THOF)
-    
-    #groupe_stats = tools.Statistics(key=lambda ind: ind.fitness.values[0])
-    #stats = tools.MultiStatistics(groupe=groupe_stats)    
-    #stats.register("avg", numpy.mean, axis=0)
-    #stats.register("std", numpy.std, axis=0)
-    #stats.register("min", numpy.min, axis=0)
-    #stats.register("max", numpy.max, axis=0)
-    #stats.register("var", numpy.var, axis=0)
-    
-    #logbook = tools.Logbook()
     
     if METHODE == 1:
         pop, logbook = algorithms.eaSimple(pop, toolbox, CXPB, MUTPB, NGEN, halloffame=hof)
@@ -327,5 +313,6 @@ if __name__ == "__main__":
         tempsFinal = tempsFinal/3600
         duree = " heure(s)"
     
-    print("Temps de calul " + str(tempsFinal) + duree)
+    print("Temps de calul : " + str(tempsFinal) + duree)
+    input("Terminé ? Appuyez sur une touche")
         
