@@ -194,10 +194,10 @@ toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("evaluate", evaluate)
 
-def main():    
+def main():
     pop = toolbox.population(n=MU)
     hof = tools.HallOfFame(maxsize=THOF)
-    
+    stats=0
     if METHODE == 1:
         pop, logbook = algorithms.eaSimple(pop, toolbox, CXPB, MUTPB, NGEN, halloffame=hof)
     
