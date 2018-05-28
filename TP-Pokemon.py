@@ -37,7 +37,7 @@ NB_PARAMETRES = 42
 # dans la fonction d'évaluation
 VALEUR_VISEE = 0
 
-
+TRANSFORMATION_EV = 16.59375
 # Min et max pour le tirage aleatoire des gênes (nombre de pokémon différents)
 INT_MIN = 0
 INT_MAX = 1061
@@ -132,7 +132,7 @@ def evaluate(individual):
   
     #permet d'éviter l'ajout de trop d'EV
     for i in range(6,42):
-        individu.append(int(individual[i]/(16.59375)))
+        individu.append(int(individual[i]/TRANSFORMATION_EV))
 
     if (individu[0]+individu[1]+individu[2]+individu[3]+individu[4]+individu[5] > 127):
         ecart = ecart + 500
@@ -214,39 +214,12 @@ def main():
                  
 if __name__ == "__main__":
     pop, hof, logbook = main()
-    """   
-    import matplotlib.pyplot as plt
-    
-    gen = logbook.select("gen")
-    dist_mins = logbook.chapters["groupe"].select("min")  
-    dist_maxs = logbook.chapters["groupe"].select("max")
-    dist_avgs = logbook.chapters["groupe"].select("avg")
-    
-    nrj_mins = logbook.chapters["energie"].select("min")  
-    nrj_maxs = logbook.chapters["energie"].select("max")    
-    nrj_avgs = logbook.chapters["energie"].select("avg")
-    
-    dist_var = logbook.chapters["groupe"].select("var")
-    nrj_var = logbook.chapters["energie"].select("var")
-    velocite = logbook.chapters["velocite"].select("max")
-    alpha = logbook.chapters["alpha"].select("max")
-    
-    fig = plt.figure()
-    
-    ax1 = plt.subplot(1,2,1)
-    line1 = ax1.plot(gen, dist_avgs, "blue", linewidth=2.5, label="Valeur")
-    plt.fill_between(gen, dist_mins, dist_maxs, color='blue',  alpha=.25)
-    plt.ylim(0,VALEUR_VISEE*4)
-    ax1.set_xlabel("Generation")
-    ax1.set_ylabel("Valeur", color="b")
-          
-    ax3 = plt.subplot(1,2,2)
-    line3 = ax3.plot(gen, dist_var, "blue", label="Variance (groupe)")
-    ax3.set_xlabel("Generation")
-    ax3.set_ylabel("Variance", color="blue")    
-"""
+
     nomPokemon = []
+    # tableau de la meilleure equipe
     meilleurPokemon = []
+
+    # stockage des EV de chaque pokémon par tableau
     EVpokemon1 = []
     EVpokemon2 = []
     EVpokemon3 = []
@@ -270,20 +243,22 @@ if __name__ == "__main__":
                     compteur = compteur + 1
         
         if compteur2 > 6 and compteur2 < 13:
-            EVpokemon1.append(int(indiv/(16.59375)))        
+            EVpokemon1.append(int(indiv/TRANSFORMATION_EV))
         if compteur2 > 12 and compteur2 < 19:
-            EVpokemon2.append(int(indiv/(16.59375)))
+            EVpokemon2.append(int(indiv/TRANSFORMATION_EV))
         if compteur2 > 18 and compteur2 < 25:
-            EVpokemon3.append(int(indiv/(16.59375)))
+            EVpokemon3.append(int(indiv/TRANSFORMATION_EV))
         if compteur2 > 24 and compteur2 < 31:
-            EVpokemon4.append(int(indiv/(16.59375)))  
+            EVpokemon4.append(int(indiv/TRANSFORMATION_EV))
         if compteur2 > 30 and compteur2 < 37:
-            EVpokemon5.append(int(indiv/(16.59375)))
+            EVpokemon5.append(int(indiv/TRANSFORMATION_EV))
         if compteur2 > 36:
-            EVpokemon6.append(int(indiv/(16.59375)))    
+            EVpokemon6.append(int(indiv/TRANSFORMATION_EV))
         
         compteur2 = compteur2 + 1
-    
+
+    # Affichage
+    print("---------------------------------------------------")
     print("Le groupe des 6 meilleurs pokémons est composé de : ")
     print(meilleurPokemon[0])
     print("avec les EV suivants : point de vie = " + str(EVpokemon1[0])
@@ -314,5 +289,5 @@ if __name__ == "__main__":
         duree = " heure(s)"
     
     print("Temps de calul : " + str(tempsFinal) + duree)
+    print("---------------------------------------------------")
     input("Terminé ? Appuyez sur une touche")
-        
